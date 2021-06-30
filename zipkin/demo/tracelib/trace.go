@@ -33,9 +33,15 @@ func WithLocalAddr(localName string) ConfigOpt {
 		c.LocalAddr = localName
 	}
 }
+func WithLocalName(localName string) ConfigOpt {
+	return func(c *Config) {
+		c.LocalName = localName
+	}
+}
 func InitTracer(opts ...ConfigOpt) func() {
 	c := Config{
 		LocalAddr:     "localhost",
+		LocalName:     "localhost",
 		ZipkinSerAddr: zipkinDefaultAddr,
 	}
 	for _, o := range opts {
