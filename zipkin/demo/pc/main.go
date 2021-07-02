@@ -18,7 +18,7 @@ var (
 	serverName = "PC-Server"
 	localAddr  = "192.168.1.63"
 	port       = 18083
-	umAddr     = "http://localhost:18084/um"
+	umAddr     = "http://um-service-http:18084/um"
 )
 
 func main() {
