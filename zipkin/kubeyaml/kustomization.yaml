@@ -1,0 +1,10 @@
+namespace: ambassador-test
+resources:
+  - ambassador/namespace.yml
+  - ambassador/ambassador-crds.yml
+  - ambassador/ambassador-rbac.yml
+  - ambassador/ambassador-svc.yml
+  - ambassador/ambassador-nodeport.yml
+  - services/quote.yml
+  - services/um-service-http.yml
+  - services/pc-service-http.yml

@@ -1,0 +1,49 @@
+---
+apiVersion: getambassador.io/v2
+kind: Mapping
+metadata:
+  name: gateway-service-http
+  namespace: ambassador-test
+spec:
+  prefix: /gateway-service-http/
+  service: 'gateway-service-http:18083'
+  // bypass_auth: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-service-http
+  namespace: ambassador-test
+spec:
+  type: ClusterIP
+  selector:
+    app: gateway-service-http
+  ports:
+    - name: http-gateway-service-http
+      targetPort: 18083
+      port: 18083
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-service-http
+  namespace: ambassador-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway-service-http
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: gateway-service-http
+    spec:
+      containers:
+        - name: gateway-service-http
+          image: trace-demo-gateway-test:v1
+          imagePullPolicy: Never
+          ports:
+            - name: http
+              containerPort: 18083

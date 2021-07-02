@@ -1,0 +1,49 @@
+---
+apiVersion: getambassador.io/v2
+kind: Mapping
+metadata:
+  name: pc-service-http
+  namespace: ambassador-test
+spec:
+  prefix: /pc/
+  service: 'pc-service-http:18083'
+  // bypass_auth: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pc-service-http
+  namespace: ambassador-test
+spec:
+  type: ClusterIP
+  selector:
+    app: pc-service-http
+  ports:
+    - name: http-pc-service-http
+      targetPort: 18083
+      port: 18083
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pc-service-http
+  namespace: ambassador-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pc-service-http
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: pc-service-http
+    spec:
+      containers:
+        - name: pc-service-http
+          image: trace-demo-pc-test:v1
+          imagePullPolicy: Never
+          ports:
+            - name: http
+              containerPort: 18083

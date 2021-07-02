@@ -1,0 +1,49 @@
+---
+apiVersion: getambassador.io/v2
+kind: Mapping
+metadata:
+  name: um-service-http
+  namespace: ambassador-test
+spec:
+  prefix: /um/
+  service: 'um-service-http:18084'
+  // bypass_auth: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: um-service-http
+  namespace: ambassador-test
+spec:
+  type: ClusterIP
+  selector:
+    app: um-service-http
+  ports:
+    - name: http-um-service-http
+      targetPort: 18084
+      port: 18084
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: um-service-http
+  namespace: ambassador-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: um-service-http
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: um-service-http
+    spec:
+      containers:
+        - name: um-service-http
+          image: trace-demo-um-test:v1
+          imagePullPolicy: Never
+          ports:
+            - name: http
+              containerPort: 18084
