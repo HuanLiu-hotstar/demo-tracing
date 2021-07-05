@@ -53,7 +53,7 @@ type server struct {
 
 // SayHello implements helloworld.GreeterServer
 func (s *server) Auth(ctx context.Context, in *pb.AuthRequest) (*pb.AuthReply, error) {
-	span, _ := tracer.StartSpanFromContext(ctx, "do-auth")
+	span, _ := tracelib.StartSpanFromContext(ctx, "do-auth")
 	defer span.Finish()
 	x := rand.Intn(100) + 50
 	time.Sleep(time.Duration(x) * time.Millisecond)
@@ -62,7 +62,7 @@ func (s *server) Auth(ctx context.Context, in *pb.AuthRequest) (*pb.AuthReply, e
 }
 
 var (
-	tracer *openzipkin.Tracer
+// tracer *openzipkin.Tracer
 )
 
 func newTracer() *openzipkin.Tracer {
@@ -72,7 +72,7 @@ func newTracer() *openzipkin.Tracer {
 	}
 	reporter := zipkinHTTP.NewReporter("http://localhost:9411/api/v2/spans")
 
-	tracer, err = openzipkin.NewTracer(reporter, openzipkin.WithLocalEndpoint(localEndpoint))
+	tracer, err := openzipkin.NewTracer(reporter, openzipkin.WithLocalEndpoint(localEndpoint))
 	if err != nil {
 		panic(fmt.Sprintf("err:%s", err))
 	}
