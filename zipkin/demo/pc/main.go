@@ -19,7 +19,7 @@ var (
 	localAddr  = "192.168.1.63"
 	port       = 18083
 	umAddr     = "http://um-service-http:18084/um"
-	zipkinAddr = "http://zipkin:9411/api/v2/span" //http://localhost:9411/api/v2/span
+	zipkinAddr = "http://zipkin:9411/api/v2/spans" //http://localhost:9411/api/v2/span
 )
 
 func main() {
