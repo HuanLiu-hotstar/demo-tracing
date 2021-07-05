@@ -21,7 +21,6 @@ import (
 	"github.com/HuanLiu-hotstar/demo-tracing/zipkin/demo/tracelib"
 	"github.com/opentracing-contrib/go-stdlib/nethttp"
 	"github.com/opentracing/opentracing-go"
-	// zipkingrpc "github.com/openzipkin/zipkin-go/middleware/grpc"
 )
 
 var (
@@ -30,10 +29,11 @@ var (
 	// auth2Addr = "http://127.0.0.1:18085/auth2"
 	// rateAddr  = "http://127.0.0.1:18082/ratelimit"
 
-	pcAddr = "http://pc-service-http:18083/pc"
-	// authGrpcAddr  = "http://authority-service-http:50055"
-	authGrpcAddr  = "http://10.99.85.110:50055"
-	limitGrpcAddr = "http://ratelimit-service-http:50052"
+	pcAddr       = "http://pc-service-http:18083/pc"
+	authGrpcAddr = "authority-service-http:50055"
+	//authGrpcAddr  = "http://10.99.85.110:50055"
+	// authGrpcAddr  = "localhost:50055"
+	limitGrpcAddr = "ratelimit-service-http:50052"
 
 	port       = ":18080"
 	localAddr  = "192.168.1.60:8082"
@@ -118,6 +118,7 @@ func list(w http.ResponseWriter, r *http.Request) {
 func getConn(address string) (*grpc.ClientConn, error) {
 
 	// Set up a connection to the server.
+	// opts := []grpc.DialOption{grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(time.Second * 3)}
 	opts := []grpc.DialOption{grpc.WithInsecure(), grpc.WithBlock(),
 		grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(opentracing.GlobalTracer())),
 		grpc.WithStreamInterceptor(
@@ -126,7 +127,7 @@ func getConn(address string) (*grpc.ClientConn, error) {
 	}
 	conn, err := grpc.Dial(address, opts...)
 	if err != nil {
-		log.Printf("did not connect: %v", err)
+		log.Printf("did not connect: %v", err, address)
 	}
 	return conn, err
 	// defer conn.Close()
