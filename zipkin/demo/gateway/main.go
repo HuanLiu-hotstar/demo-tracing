@@ -30,8 +30,9 @@ var (
 	// auth2Addr = "http://127.0.0.1:18085/auth2"
 	// rateAddr  = "http://127.0.0.1:18082/ratelimit"
 
-	pcAddr        = "http://pc-service-http:18083/pc"
-	authGrpcAddr  = "http://authority-service-http:50055"
+	pcAddr = "http://pc-service-http:18083/pc"
+	// authGrpcAddr  = "http://authority-service-http:50055"
+	authGrpcAddr  = "http://10.99.85.110:50055"
 	limitGrpcAddr = "http://ratelimit-service-http:50052"
 
 	port       = ":18080"
@@ -121,6 +122,7 @@ func getConn(address string) (*grpc.ClientConn, error) {
 		grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(opentracing.GlobalTracer())),
 		grpc.WithStreamInterceptor(
 			otgrpc.OpenTracingStreamClientInterceptor(opentracing.GlobalTracer())),
+		grpc.WithTimeout(time.Second * 3),
 	}
 	conn, err := grpc.Dial(address, opts...)
 	if err != nil {
