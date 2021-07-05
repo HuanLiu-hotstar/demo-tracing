@@ -26,12 +26,13 @@ import (
 
 var (
 	// tracer        *openzipkin.Tracer
-	pcAddr        = "http://127.0.0.1:18083/pc"
-	authAddr      = "http://127.0.0.1:18085/auth"
-	auth2Addr     = "http://127.0.0.1:18085/auth2"
-	rateAddr      = "http://127.0.0.1:18082/ratelimit"
-	authGrpcAddr  = "127.0.0.1:50055"
-	limitGrpcAddr = "127.0.0.1:50052"
+	// authAddr  = "http://127.0.0.1:18085/auth"
+	// auth2Addr = "http://127.0.0.1:18085/auth2"
+	// rateAddr  = "http://127.0.0.1:18082/ratelimit"
+
+	pcAddr        = "http://pc-service-http:18083/pc"
+	authGrpcAddr  = "http://authority-service-http:50055"
+	limitGrpcAddr = "http://ratelimit-service-http:50052"
 
 	port       = ":18080"
 	localAddr  = "192.168.1.60:8082"
