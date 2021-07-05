@@ -1,0 +1,49 @@
+---
+apiVersion: getambassador.io/v2
+kind: Mapping
+metadata:
+  name: authority-service-http
+  namespace: ambassador-test
+spec:
+  prefix: /authority/
+  service: 'authority-service-http:50055'
+  // bypass_auth: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authority-service-http
+  namespace: ambassador-test
+spec:
+  type: ClusterIP
+  selector:
+    app: authority-service-http
+  ports:
+    - name: http-authority-service-http
+      targetPort: 50055 
+      port: 50055
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authority-service-http
+  namespace: ambassador-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authority-service-http
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: authority-service-http
+    spec:
+      containers:
+        - name: authority-service-http
+          image: trace-demo-authority-test:v2
+          imagePullPolicy: Never
+          ports:
+            - name: http
+              containerPort: 50055

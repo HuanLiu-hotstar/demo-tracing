@@ -1,0 +1,49 @@
+---
+apiVersion: getambassador.io/v2
+kind: Mapping
+metadata:
+  name: ratelimit-service-http
+  namespace: ambassador-test
+spec:
+  prefix: /ratelimit/
+  service: 'ratelimit-service-http:50052'
+  // bypass_auth: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ratelimit-service-http
+  namespace: ambassador-test
+spec:
+  type: ClusterIP
+  selector:
+    app: ratelimit-service-http
+  ports:
+    - name: http-ratelimit-service-http
+      targetPort: 50052 
+      port: 50052
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ratelimit-service-http
+  namespace: ambassador-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ratelimit-service-http
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: ratelimit-service-http
+    spec:
+      containers:
+        - name: ratelimit-service-http
+          image: trace-demo-ratelimit-test:v2
+          imagePullPolicy: Never
+          ports:
+            - name: http
+              containerPort: 50052 
