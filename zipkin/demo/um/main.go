@@ -17,12 +17,16 @@ var (
 	// tracer     *openzipkin.Tracer
 	serverName = "UM-Server"
 	localAddr  = "192.168.1.61"
+	zipkinAddr = "http://zipkin:9411/api/v2/span" //http://localhost:9411/api/v2/span
 	port       = 18084
 )
 
 func main() {
 
-	f := tracelib.InitTracer(tracelib.WithLocalAddr(localAddr), tracelib.WithLocalName(serverName))
+	opts := []tracelib.ConfigOpt{tracelib.WithLocalAddr(localAddr), tracelib.WithLocalName(serverName),
+		tracelib.WithZipkinSerAddr(zipkinAddr),
+	}
+	f := tracelib.InitTracer(opts...)
 	defer f()
 
 	mux := http.NewServeMux()
