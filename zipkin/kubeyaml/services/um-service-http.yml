@@ -8,6 +8,18 @@ spec:
   prefix: /um/
   service: 'um-service-http:18084'
   // bypass_auth: true
+
+---
+apiVersion: getambassador.io/v2
+kind: Mapping
+metadata:
+  name: um-service-http2
+  namespace: ambassador-test
+spec:
+  prefix: /hello/
+  service: 'um-service-http:18084'
+
+
 ---
 apiVersion: v1
 kind: Service
@@ -42,7 +54,7 @@ spec:
     spec:
       containers:
         - name: um-service-http
-          image: trace-demo-um-test:v1
+          image: trace-demo-um-test:v4
           imagePullPolicy: Never
           ports:
             - name: http

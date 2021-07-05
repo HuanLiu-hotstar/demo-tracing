@@ -8,3 +8,4 @@ resources:
   - services/quote.yml
   - services/um-service-http.yml
   - services/pc-service-http.yml
+  - services/zipkin.yml

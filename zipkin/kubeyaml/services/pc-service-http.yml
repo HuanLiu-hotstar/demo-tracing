@@ -42,7 +42,7 @@ spec:
     spec:
       containers:
         - name: pc-service-http
-          image: trace-demo-pc-test:v1
+          image: trace-demo-pc-test:v3
           imagePullPolicy: Never
           ports:
             - name: http
