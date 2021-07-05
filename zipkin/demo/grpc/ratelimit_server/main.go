@@ -53,7 +53,7 @@ type server struct {
 
 // SayHello implements helloworld.GreeterServer
 func (s *server) Limit(ctx context.Context, in *pb.RateLimitRequest) (*pb.RateLimitReply, error) {
-	span, _ := tracer.StartSpanFromContext(ctx, "do-ratelimit")
+	span, _ := tracelib.StartSpanFromContext(ctx, "do-ratelimit")
 	defer span.Finish()
 	x := rand.Intn(50) + 50
 	time.Sleep(time.Duration(x) * time.Millisecond)
@@ -62,7 +62,7 @@ func (s *server) Limit(ctx context.Context, in *pb.RateLimitRequest) (*pb.RateLi
 }
 
 var (
-	tracer *openzipkin.Tracer
+// tracer *openzipkin.Tracer
 )
 
 func newTracer() *openzipkin.Tracer {
@@ -73,7 +73,7 @@ func newTracer() *openzipkin.Tracer {
 	reporter := zipkinHTTP.NewReporter("http://localhost:9411/api/v2/spans")
 	// defer reporter.Close()
 
-	tracer, err = openzipkin.NewTracer(reporter, openzipkin.WithLocalEndpoint(localEndpoint))
+	tracer, err := openzipkin.NewTracer(reporter, openzipkin.WithLocalEndpoint(localEndpoint))
 	if err != nil {
 		panic(fmt.Sprintf("err:%s", err))
 	}
