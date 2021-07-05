@@ -1,0 +1,14 @@
+---
+apiVersion: getambassador.io/v2
+kind: AuthService
+metadata:
+  name: auth-service-http-obj
+  namespace: ambassador-test
+spec:
+  auth_service: 'auth-service-http.ambassador-test:3000'
+  allowed_request_headers:
+    - 'Authorization'
+    - 'x-passport'
+  allowed_authorization_headers:
+    - 'Authorization'
+    - 'x-passport'

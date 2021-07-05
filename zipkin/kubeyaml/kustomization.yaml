@@ -8,7 +8,9 @@ resources:
   - services/quote.yml
   - services/um-service-http.yml
   - services/pc-service-http.yml
-  - services/zipkin.yml
+  - services/zipkin_tracing_plugin.yml
   - services/ratelimit-service-http.yml
   - services/authority-service-http.yml
   - services/gateway-service-http.yml
+  - services/auth-service-http_plugin.yml
+  - services/auth-service-http.yml
