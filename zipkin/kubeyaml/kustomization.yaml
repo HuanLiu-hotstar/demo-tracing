@@ -9,3 +9,6 @@ resources:
   - services/um-service-http.yml
   - services/pc-service-http.yml
   - services/zipkin.yml
+  - services/ratelimit-service-http.yml
+  - services/authority-service-http.yml
+  - services/gateway-service-http.yml

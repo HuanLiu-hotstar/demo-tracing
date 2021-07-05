@@ -5,8 +5,8 @@ metadata:
   name: gateway-service-http
   namespace: ambassador-test
 spec:
-  prefix: /gateway-service-http/
-  service: 'gateway-service-http:18083'
+  prefix: /gateway/
+  service: 'gateway-service-http:18080'
   // bypass_auth: true
 ---
 apiVersion: v1
@@ -20,8 +20,8 @@ spec:
     app: gateway-service-http
   ports:
     - name: http-gateway-service-http
-      targetPort: 18083
-      port: 18083
+      targetPort: 18080 
+      port: 18080
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -42,8 +42,8 @@ spec:
     spec:
       containers:
         - name: gateway-service-http
-          image: trace-demo-gateway-test:v1
+          image: trace-demo-gateway-test:v3
           imagePullPolicy: Never
           ports:
             - name: http
-              containerPort: 18083
+              containerPort: 18080
