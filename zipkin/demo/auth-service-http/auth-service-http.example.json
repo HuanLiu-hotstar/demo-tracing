@@ -1,0 +1,6 @@
+{
+    "port": 3000,
+    "request_logging": true,
+    "jwt_rsa_public_key": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAM40VspKcLBbf1zJZYVfTDZW+CSo4ur6\nPXsM4Qm6ZqbyVuZFu2PnCkPQ8Gi5GTWahgaNEkDtpssgazAjNVViiwUCAwEAAQ==\n-----END PUBLIC KEY-----\n",
+    "jwt_rsa_private_key": "-----BEGIN RSA PRIVATE KEY-----\nMIIBOgIBAAJBAM40VspKcLBbf1zJZYVfTDZW+CSo4ur6PXsM4Qm6ZqbyVuZFu2Pn\nCkPQ8Gi5GTWahgaNEkDtpssgazAjNVViiwUCAwEAAQJBAMVekYgU0mHrYi/k0Vhk\ni+UjP2aPhItXNEu4Wxndoe2+JYUKymoF9Vr5zt/Gko7h/e7bejmy5VToxV8FC1NA\nL2ECIQDx+N7qjcCN7JnJR1z+oAhm0V5Xe8cF5yXWvMoY/Pq5PQIhANooowJkuF6N\nqw4hqwnAjeDcuWMLEBSgMTUnp7wZzeVpAiAhKbCziNX5HZI+Kc+u/hPos40whEBU\nqMdg1OMF5bYfKQIgLlfnmQCQcfWiWtQoI2A2Q4hgEXwuJFOLYIFWDo1kwdECIDB0\nXasjX/ZJNYKGikSodJWhYMekSYPVx15XRtHgVKdg\n-----END RSA PRIVATE KEY-----\n"
+}
