@@ -40,4 +40,5 @@ func um(w http.ResponseWriter, r *http.Request) {
 	x := rand.Intn(100) + 10
 	time.Sleep(time.Duration(x) * time.Millisecond)
 	w.Write([]byte(fmt.Sprintf(`{"um":%d}`, x)))
+	log.Printf("res:%d", x)
 }
