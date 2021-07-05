@@ -27,17 +27,23 @@ import (
 	"net"
 	"time"
 
+	"github.com/HuanLiu-hotstar/demo-tracing/zipkin/demo/tracelib"
 	pb "github.com/HuanLiu-hotstar/proto/ratelimit"
+	"github.com/grpc-ecosystem/grpc-opentracing/go/otgrpc"
+	"github.com/opentracing/opentracing-go"
 	"google.golang.org/grpc"
 	//pb "helloworld/helloworld"
 
 	openzipkin "github.com/openzipkin/zipkin-go"
-	zipkingrpc "github.com/openzipkin/zipkin-go/middleware/grpc"
+	// zipkingrpc "github.com/openzipkin/zipkin-go/middleware/grpc"
 	zipkinHTTP "github.com/openzipkin/zipkin-go/reporter/http"
 )
 
 const (
-	port = ":50052"
+	port       = ":50052"
+	localAddr  = "192.168.1.61:8082"
+	serverName = "ratelimit"
+	zipkinAddr = "http://zipkin:9411/api/v2/spans" //http://localhost:9411/api/v2/span
 )
 
 // server is used to implement helloworld.GreeterServer.
@@ -74,16 +80,27 @@ func newTracer() *openzipkin.Tracer {
 	return tracer
 }
 func main() {
-	newTracer()
+	// newTracer()
+	opts := []tracelib.ConfigOpt{tracelib.WithLocalAddr(localAddr), tracelib.WithLocalName(serverName),
+		tracelib.WithZipkinSerAddr(zipkinAddr),
+	}
+	f := tracelib.InitTracer(opts...)
+	defer f()
+
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	m := map[string]string{"name": "ratelimit"}
-	middleware := grpc.StatsHandler(zipkingrpc.NewServerHandler(tracer, zipkingrpc.ServerTags(m)))
-
-	s := grpc.NewServer(middleware)
+	// m := map[string]string{"name": "ratelimit"}
+	// middleware := grpc.StatsHandler(zipkingrpc.NewServerHandler(tracer, zipkingrpc.ServerTags(m)))
+	// s := grpc.NewServer(middleware)
+	// Initialize the gRPC server.
+	s := grpc.NewServer(
+		grpc.UnaryInterceptor(
+			otgrpc.OpenTracingServerInterceptor(opentracing.GlobalTracer())),
+		grpc.StreamInterceptor(
+			otgrpc.OpenTracingStreamServerInterceptor(opentracing.GlobalTracer())))
 	pb.RegisterRateLimitServer(s, &server{})
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {

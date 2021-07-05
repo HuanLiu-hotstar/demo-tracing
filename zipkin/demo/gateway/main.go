@@ -13,7 +13,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-opentracing/go/otgrpc"
 
-	openzipkin "github.com/openzipkin/zipkin-go"
+	// openzipkin "github.com/openzipkin/zipkin-go"
 
 	pb "github.com/HuanLiu-hotstar/proto/authority"
 	pblt "github.com/HuanLiu-hotstar/proto/ratelimit"
@@ -25,7 +25,7 @@ import (
 )
 
 var (
-	tracer        *openzipkin.Tracer
+	// tracer        *openzipkin.Tracer
 	pcAddr        = "http://127.0.0.1:18083/pc"
 	authAddr      = "http://127.0.0.1:18085/auth"
 	auth2Addr     = "http://127.0.0.1:18085/auth2"
@@ -34,13 +34,17 @@ var (
 	limitGrpcAddr = "127.0.0.1:50052"
 
 	port       = ":18080"
-	localAddr  = "192.168.1.61:8082"
+	localAddr  = "192.168.1.60:8082"
 	serverName = "Gateway"
+	zipkinAddr = "http://zipkin:9411/api/v2/spans" //http://localhost:9411/api/v2/span
 )
 
 func main() {
 
-	f := tracelib.InitTracer(tracelib.WithLocalAddr(localAddr), tracelib.WithLocalName(serverName))
+	opts := []tracelib.ConfigOpt{tracelib.WithLocalAddr(localAddr), tracelib.WithLocalName(serverName),
+		tracelib.WithZipkinSerAddr(zipkinAddr),
+	}
+	f := tracelib.InitTracer(opts...)
 	defer f()
 	mux := http.NewServeMux()
 	mux.HandleFunc("/list", list)
@@ -107,12 +111,16 @@ func client(w http.ResponseWriter, r *http.Request) {
 }
 func list(w http.ResponseWriter, r *http.Request) {
 }
+
+//client to get connection
 func getConn(address string) (*grpc.ClientConn, error) {
 
 	// Set up a connection to the server.
 	opts := []grpc.DialOption{grpc.WithInsecure(), grpc.WithBlock(),
-		grpc.WithUnaryInterceptor(
-			otgrpc.OpenTracingClientInterceptor(opentracing.GlobalTracer()))}
+		grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(opentracing.GlobalTracer())),
+		grpc.WithStreamInterceptor(
+			otgrpc.OpenTracingStreamClientInterceptor(opentracing.GlobalTracer())),
+	}
 	conn, err := grpc.Dial(address, opts...)
 	if err != nil {
 		log.Printf("did not connect: %v", err)
