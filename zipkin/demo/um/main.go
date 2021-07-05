@@ -17,7 +17,7 @@ var (
 	// tracer     *openzipkin.Tracer
 	serverName = "UM-Server"
 	localAddr  = "192.168.1.61"
-	zipkinAddr = "http://zipkin:9411/api/v2/span" //http://localhost:9411/api/v2/span
+	zipkinAddr = "http://zipkin:9411/api/v2/spans" //http://localhost:9411/api/v2/span
 	port       = 18084
 )
 
