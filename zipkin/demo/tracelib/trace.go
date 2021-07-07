@@ -52,6 +52,11 @@ func WithZipkinSerAddr(addr string) ConfigOpt {
 		c.ZipkinSerAddr = addr
 	}
 }
+
+// InitTracer
+// usage:
+// df := InitTracer(opts...)
+// defer df()
 func InitTracer(opts ...ConfigOpt) func() {
 	c := Config{
 		LocalAddr:     "localhost",
@@ -79,6 +84,11 @@ func InitTracer(opts ...ConfigOpt) func() {
 }
 
 //StartSpanFromContext start a sub-span from context
+// usage:
+// span,pctx := tracelib.StartSpanFromContext(ctx,"span_name")
+// defer span.Finish()
+// use pctx for generating other span
+
 func StartSpanFromContext(ctx context.Context, operationName string, opts ...opentracing.StartSpanOption) (opentracing.Span, context.Context) {
 	return opentracing.StartSpanFromContext(ctx, operationName, opts...)
 }
@@ -89,6 +99,9 @@ func StartSpan(operationName string, opts ...opentracing.StartSpanOption) opentr
 }
 
 // NewGrpcConn new client connection to grpc server
+// usage:
+// conn,err := NewGrpcConn(address,opts...)
+// defer conn.Close()
 func NewGrpcConn(address string, opt ...grpc.DialOption) (*grpc.ClientConn, error) {
 
 	// Set up a connection to the server.
@@ -103,6 +116,9 @@ func NewGrpcConn(address string, opt ...grpc.DialOption) (*grpc.ClientConn, erro
 }
 
 // NewGrpcServer new a grpc server with tracing
+// usage:
+// s := NewGrpcConn(opts...)
+// err := s.Serve()
 func NewGrpcServer(opt ...grpc.ServerOption) *grpc.Server {
 
 	opts := []grpc.ServerOption{
@@ -115,11 +131,16 @@ func NewGrpcServer(opt ...grpc.ServerOption) *grpc.Server {
 }
 
 // MiddlewareHttp generate middleware for http.Handler
+// usage:
+// h:= MiddlewareHttp(my http.Handler)
+// http.ListenAndServe(port,h)
 func MiddlewareHttp(h http.Handler, options ...nethttp.MWOption) http.Handler {
 	return nethttp.Middleware(opentracing.GlobalTracer(), h, options...)
 }
 
 // MiddlewareGin generate the middleware of gin
+// usage:
+// g.Default().Use(MiddlewareGin())
 func MiddlewareGin(options ...nethttp.MWOption) func(c *gin.Context) {
 	return ginhttp.Middleware(opentracing.GlobalTracer())
 }
@@ -153,7 +174,4 @@ func NewHttpReq(ctx context.Context, method, addr string, bye []byte, timeout ti
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
 	return body, err
-	//req = req.WithContext(ctx)
-	//req, ht := nethttp.TraceRequest(opentracing.GlobalTracer(), req)
-	//return req, ht
 }
