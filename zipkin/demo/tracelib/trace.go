@@ -150,10 +150,24 @@ type HttpRequest struct {
 	Address string
 	Data    []byte
 	Timeout time.Duration
+	header  map[string]string
 }
 
+func NewHttpRequest() HttpRequest {
+	return HttpRequest{
+		Method:  "GET",
+		Timeout: time.Second * 5,
+		header:  make(map[string]string),
+	}
+}
 func (h HttpRequest) Do(ctx context.Context, b []byte) ([]byte, error) {
 	return NewHttpReq(ctx, h.Method, h.Address, b, h.Timeout)
+}
+func (h HttpRequest) AddHeader(m map[string]string) {
+	// h.header = m
+	for k, v := range m {
+		h.header[k] = v
+	}
 }
 
 // NewHttpReq with context and with a span
