@@ -37,16 +37,22 @@ type Config struct {
 }
 type ConfigOpt func(*Config)
 
+// WithLocalAddr configure localhost ip ,which display in webUI
 func WithLocalAddr(localName string) ConfigOpt {
 	return func(c *Config) {
 		c.LocalAddr = localName
 	}
 }
+
+// WithLocalName configure the local server or client name ,which display in webUI
 func WithLocalName(localName string) ConfigOpt {
 	return func(c *Config) {
 		c.LocalName = localName
 	}
 }
+
+// / WithZipkinSerAddr configure tracing data server default is
+// http://localhost:9411/api/v2/spans/
 func WithZipkinSerAddr(addr string) ConfigOpt {
 	return func(c *Config) {
 		c.ZipkinSerAddr = addr
@@ -152,6 +158,18 @@ type HttpRequest struct {
 	Timeout time.Duration
 	header  map[string]string
 }
+type HttpRequestOpt func(*HttpRequest)
+
+func WithTimeout(timeout time.Duration) HttpRequestOpt {
+	return func(h *HttpRequest) {
+		h.Timeout = timeout
+	}
+}
+func WithMethod(m string) HttpRequestOpt {
+	return func(h *HttpRequest) {
+		h.Method = m
+	}
+}
 
 func NewHttpRequest() HttpRequest {
 	return HttpRequest{
@@ -184,6 +202,9 @@ func NewHttpReq(ctx context.Context, method, addr string, bye []byte, timeout ti
 	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
+	}
+	if res.StatusCode != 200 {
+		return nil, fmt.Errorf("err-code:%d", res.StatusCode)
 	}
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
