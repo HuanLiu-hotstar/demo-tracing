@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/HuanLiu-hotstar/demo-tracing/zipkin/demo/tracelib"
-	"github.com/opentracing-contrib/go-stdlib/nethttp"
-	"github.com/opentracing/opentracing-go"
+	// "github.com/opentracing-contrib/go-stdlib/nethttp"
+	// "github.com/opentracing/opentracing-go"
 )
 
 var (
@@ -32,7 +32,8 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/um", um)
 
-	h := nethttp.Middleware(opentracing.GlobalTracer(), mux)
+	//h := nethttp.Middleware(opentracing.GlobalTracer(), mux)
+	h := tracelib.MiddlewareHttp(mux)
 
 	log.Printf("Server listening! %d ...", port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), h))
