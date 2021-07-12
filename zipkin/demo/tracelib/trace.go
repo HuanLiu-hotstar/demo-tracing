@@ -171,12 +171,17 @@ func WithMethod(m string) HttpRequestOpt {
 	}
 }
 
-func NewHttpRequest() HttpRequest {
-	return HttpRequest{
+func NewHttpRequest(opts ...HttpRequestOpt) HttpRequest {
+
+	h := HttpRequest{
 		Method:  "GET",
 		Timeout: time.Second * 5,
 		header:  make(map[string]string),
 	}
+	for _, opt := range opts {
+		opt(&h)
+	}
+	return h
 }
 func (h HttpRequest) Do(ctx context.Context, b []byte) ([]byte, error) {
 	return NewHttpReq(ctx, h.Method, h.Address, b, h.Timeout)
