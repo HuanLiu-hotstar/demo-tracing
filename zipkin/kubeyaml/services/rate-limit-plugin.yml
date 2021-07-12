@@ -1,0 +1,8 @@
+---
+apiVersion: getambassador.io/v2
+kind: RateLimitService
+metadata:
+  name: ratelimit
+spec:
+  service: "example-rate-limit:5000"
+  protocol_version: v3

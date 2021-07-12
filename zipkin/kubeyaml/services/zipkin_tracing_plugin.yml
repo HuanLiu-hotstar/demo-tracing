@@ -8,9 +8,7 @@ spec:
   driver: zipkin
   config: {}
   sampling:
-    // random: 1
-    client: 1
-    // overall: 10 
+    overall: 100 
 ---
 apiVersion: apps/v1
 kind: Deployment

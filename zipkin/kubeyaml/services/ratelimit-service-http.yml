@@ -42,7 +42,7 @@ spec:
     spec:
       containers:
         - name: ratelimit-service-http
-          image: trace-demo-ratelimit-test:v2
+          image: trace-demo-ratelimit-test:v3
           imagePullPolicy: Never
           ports:
             - name: http

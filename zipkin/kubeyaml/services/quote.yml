@@ -6,12 +6,39 @@ metadata:
 spec:
   prefix: /quote/
   service: quote
+  bypass_auth: true
+  labels:
+    ambassador: 
+      - request_label_group: 
+        - x-ambassador-test-allow: 
+          header : "x-ambassador-test-allow"
+  #// rate_limits: 
+  #//  - descriptor: A test case 
+  #//    header: 
+  #//     - "x-ambassador-test-allow"
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: quote
   annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v2
+      kind: Mapping
+      name: quote-backend
+      prefix: /
+      service: quote:5000
+      ---
+      apiVersion: ambassador/v2
+      kind: Mapping
+      name: quote-backend
+      prefix: /backend/
+      service: quote
+      rate_limits:
+        - descriptor: A test case
+          headers:
+            - "x-ambassador-test-allow"
     a8r.io/description: 'Quote of the moment service'
     a8r.io/owner: 'No owner'
     a8r.io/chat: '#ambassador'

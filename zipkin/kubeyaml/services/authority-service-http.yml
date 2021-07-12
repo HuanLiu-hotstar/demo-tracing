@@ -7,7 +7,6 @@ metadata:
 spec:
   prefix: /authority/
   service: 'authority-service-http:50055'
-  // bypass_auth: true
 ---
 apiVersion: v1
 kind: Service
@@ -42,7 +41,7 @@ spec:
     spec:
       containers:
         - name: authority-service-http
-          image: trace-demo-authority-test:v2
+          image: trace-demo-authority-test:v4
           imagePullPolicy: Never
           ports:
             - name: http

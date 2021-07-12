@@ -6,6 +6,7 @@ metadata:
   namespace: ambassador-test
 spec:
   auth_service: 'auth-service-http.ambassador-test:3000'
+  bypass_auth: false
   allowed_request_headers:
     - 'Authorization'
     - 'x-passport'

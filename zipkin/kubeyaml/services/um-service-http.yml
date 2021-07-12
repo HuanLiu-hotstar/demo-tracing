@@ -7,7 +7,6 @@ metadata:
 spec:
   prefix: /um/
   service: 'um-service-http:18084'
-  // bypass_auth: true
 
 ---
 apiVersion: getambassador.io/v2
@@ -54,7 +53,7 @@ spec:
     spec:
       containers:
         - name: um-service-http
-          image: trace-demo-um-test:v4
+          image: trace-demo-um-test:v5
           imagePullPolicy: Never
           ports:
             - name: http
