@@ -83,6 +83,21 @@ func playback(w http.ResponseWriter, r *http.Request) {
 
 // func doclient(ctx context.Context, addr string) {
 func callpc(ctx context.Context, addr, clientName string, reqData *Req) error {
+	opts := []tracelib.HttpRequestOpt{
+		tracelib.WithAddress(addr),
+		tracelib.WithTimeout(5 * time.Second),
+	}
+	req := tracelib.NewHttpRequest(opts...)
+	body, err := req.Do(ctx, nil)
+	if err != nil {
+		log.Printf("err:%s", err)
+		return err
+	}
+	log.Printf("body:%s", body)
+	return nil
+
+}
+func callpcx(ctx context.Context, addr, clientName string, reqData *Req) error {
 
 	req, err := http.NewRequest("GET", addr, nil)
 	if err != nil {
@@ -137,7 +152,7 @@ func callAuthGrpc(ctx context.Context, address, name string) {
 	span, nctx := tracelib.StartSpanFromContext(ctx, name)
 	defer span.Finish()
 
-	conn, err := getConn(address)
+	conn, err := tracelib.NewGrpcConn(address)
 	if err != nil {
 		log.Printf("did not connect: %v", err)
 		return
@@ -161,7 +176,7 @@ func callRateLimitGrpc(ctx context.Context, address, name string) {
 	log.Printf("addr:%s name:%s", address, name)
 	span, nctx := tracelib.StartSpanFromContext(ctx, name)
 	defer span.Finish()
-	conn, err := getConn(address)
+	conn, err := tracelib.NewGrpcConn(address)
 	if err != nil {
 		log.Printf("did not connect: %v", err)
 		return
