@@ -160,6 +160,11 @@ type HttpRequest struct {
 }
 type HttpRequestOpt func(*HttpRequest)
 
+func WithHeader(m map[string]string) HttpRequestOpt {
+	return func(h *HttpRequest) {
+		h.AddHeader(m)
+	}
+}
 func WithAddress(addr string) HttpRequestOpt {
 	return func(h *HttpRequest) {
 		h.Address = addr
