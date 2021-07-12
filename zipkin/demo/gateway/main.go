@@ -152,7 +152,8 @@ func callAuthGrpc(ctx context.Context, address, name string) {
 	span, nctx := tracelib.StartSpanFromContext(ctx, name)
 	defer span.Finish()
 
-	conn, err := tracelib.NewGrpcConn(address)
+	opts := []grpc.DialOption{grpc.WithInsecure(), grpc.WithBlock()}
+	conn, err := tracelib.NewGrpcConn(address, opts...)
 	if err != nil {
 		log.Printf("did not connect: %v", err)
 		return
@@ -176,7 +177,8 @@ func callRateLimitGrpc(ctx context.Context, address, name string) {
 	log.Printf("addr:%s name:%s", address, name)
 	span, nctx := tracelib.StartSpanFromContext(ctx, name)
 	defer span.Finish()
-	conn, err := tracelib.NewGrpcConn(address)
+	opts := []grpc.DialOption{grpc.WithInsecure(), grpc.WithBlock()}
+	conn, err := tracelib.NewGrpcConn(address, opts...)
 	if err != nil {
 		log.Printf("did not connect: %v", err)
 		return
