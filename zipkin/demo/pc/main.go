@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gin-gonic/gin"
+
 	"github.com/HuanLiu-hotstar/demo-tracing/zipkin/demo/tracelib"
 	"github.com/opentracing-contrib/go-stdlib/nethttp"
 	"github.com/opentracing/opentracing-go"
@@ -29,12 +31,17 @@ func main() {
 	}
 	f := tracelib.InitTracer(opts...)
 	defer f()
-	mux := http.NewServeMux()
-	mux.HandleFunc("/pc", pc)
+	rgin := gin.Default()
+	rgin.Use(tracelib.MiddlewareGin())
+	rgin.GET("/pc", func(c *gin.Context) {
+		pc(c.Writer, c.Request)
+	})
+	rgin.Run(fmt.Sprintf(":%d", port))
 
-	h := nethttp.Middleware(opentracing.GlobalTracer(), mux)
-	log.Printf("Server listening! %d ...", port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), h))
+	// h := nethttp.Middleware(opentracing.GlobalTracer(), mux)
+	//	h := tracelib.MiddlewareHttp(mux)
+	//	log.Printf("Server listening! %d ...", port)
+	//	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), h))
 
 }
 func pc(w http.ResponseWriter, r *http.Request) {
@@ -54,6 +61,18 @@ func otherwork(c context.Context) {
 }
 
 func doclient(ctx context.Context) {
+	opts := []tracelib.HttpRequestOpt{
+		tracelib.WithAddress(umAddr),
+	}
+	httpclient := tracelib.NewHttpRequest(opts...)
+	respbyte, err := httpclient.Do(ctx, nil)
+	if err != nil {
+		log.Printf("err:%s", err)
+		return
+	}
+	log.Printf("body:%s", respbyte)
+}
+func doclient2(ctx context.Context) {
 
 	req, err := http.NewRequest("GET", umAddr, nil)
 	if err != nil {
