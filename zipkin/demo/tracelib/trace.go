@@ -160,6 +160,11 @@ type HttpRequest struct {
 }
 type HttpRequestOpt func(*HttpRequest)
 
+func WithAddress(addr string) HttpRequestOpt {
+	return func(h *HttpRequest) {
+		h.Address = addr
+	}
+}
 func WithTimeout(timeout time.Duration) HttpRequestOpt {
 	return func(h *HttpRequest) {
 		h.Timeout = timeout
