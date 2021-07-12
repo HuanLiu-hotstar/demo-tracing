@@ -21,7 +21,7 @@ package main
 
 import (
 	"context"
-	"fmt"
+	// "fmt"
 	"log"
 	"math/rand"
 	"net"
@@ -29,14 +29,13 @@ import (
 
 	"github.com/HuanLiu-hotstar/demo-tracing/zipkin/demo/tracelib"
 	pb "github.com/HuanLiu-hotstar/proto/authority"
-	"github.com/grpc-ecosystem/grpc-opentracing/go/otgrpc"
-	"github.com/opentracing/opentracing-go"
-	"google.golang.org/grpc"
+	// "github.com/grpc-ecosystem/grpc-opentracing/go/otgrpc"
+	// "github.com/opentracing/opentracing-go"
+	// "google.golang.org/grpc"
 	//pb "helloworld/helloworld"
-
-	openzipkin "github.com/openzipkin/zipkin-go"
+	// openzipkin "github.com/openzipkin/zipkin-go"
 	// zipkingrpc "github.com/openzipkin/zipkin-go/middleware/grpc"
-	zipkinHTTP "github.com/openzipkin/zipkin-go/reporter/http"
+	// zipkinHTTP "github.com/openzipkin/zipkin-go/reporter/http"
 )
 
 const (
@@ -65,19 +64,19 @@ var (
 // tracer *openzipkin.Tracer
 )
 
-func newTracer() *openzipkin.Tracer {
-	localEndpoint, err := openzipkin.NewEndpoint("auth-grpc-server", "192.168.1.61:8082")
-	if err != nil {
-		log.Fatalf("Failed to create Zipkin exporter: %v", err)
-	}
-	reporter := zipkinHTTP.NewReporter("http://localhost:9411/api/v2/spans")
+// func newTracer() *openzipkin.Tracer {
+// 	localEndpoint, err := openzipkin.NewEndpoint("auth-grpc-server", "192.168.1.61:8082")
+// 	if err != nil {
+// 		log.Fatalf("Failed to create Zipkin exporter: %v", err)
+// 	}
+// 	reporter := zipkinHTTP.NewReporter("http://localhost:9411/api/v2/spans")
 
-	tracer, err := openzipkin.NewTracer(reporter, openzipkin.WithLocalEndpoint(localEndpoint))
-	if err != nil {
-		panic(fmt.Sprintf("err:%s", err))
-	}
-	return tracer
-}
+// 	tracer, err := openzipkin.NewTracer(reporter, openzipkin.WithLocalEndpoint(localEndpoint))
+// 	if err != nil {
+// 		panic(fmt.Sprintf("err:%s", err))
+// 	}
+// 	return tracer
+// }
 func main() {
 	// newTracer()
 
@@ -95,12 +94,12 @@ func main() {
 	// middleware := grpc.StatsHandler(zipkingrpc.NewServerHandler(tracer, zipkingrpc.ServerTags(m)))
 	// s := grpc.NewServer(middleware)
 
-	s := grpc.NewServer(
-		grpc.UnaryInterceptor(
-			otgrpc.OpenTracingServerInterceptor(opentracing.GlobalTracer())),
-		grpc.StreamInterceptor(
-			otgrpc.OpenTracingStreamServerInterceptor(opentracing.GlobalTracer())))
-
+	// s := grpc.NewServer(
+	// 	grpc.UnaryInterceptor(
+	// 		otgrpc.OpenTracingServerInterceptor(opentracing.GlobalTracer())),
+	// 	grpc.StreamInterceptor(
+	// 		otgrpc.OpenTracingStreamServerInterceptor(opentracing.GlobalTracer())))
+	s := tracelib.NewGrpcServer()
 	pb.RegisterAuthServer(s, &server{})
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
